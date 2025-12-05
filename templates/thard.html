@@ -1,0 +1,114 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Prasanna - 3D Quote</title>
+  <style>
+    *{margin:0;padding:0;box-sizing:border-box}
+    body{
+      height:100vh;
+      font-family:Arial, Helvetica, sans-serif;
+      background: radial-gradient(circle at top left, #ff007f, #5a00ff, #001f4d);
+      display:flex;
+      justify-content:center;
+      align-items:center;
+      overflow:hidden;
+      perspective:1400px;
+      color:white;
+    }
+
+    .card{
+      width:min(900px,90vw);
+      padding:30px;
+      border-radius:22px;
+      background:rgba(255,255,255,0.08);
+      backdrop-filter:blur(10px);
+      box-shadow:0 20px 60px rgba(0,0,0,0.6);
+      transform-style:preserve-3d;
+      text-align:center;
+      animation:float 5s ease-in-out infinite;
+    }
+
+    @keyframes float{
+      0%{transform:translateY(0) rotateX(0deg)}
+      50%{transform:translateY(-18px) rotateX(3deg)}
+      100%{transform:translateY(0) rotateX(0deg)}
+    }
+
+    h1{
+      font-size:clamp(26px,4vw,38px);
+      line-height:1.2;
+      text-shadow:0 4px 16px rgba(0,0,0,0.5);
+    }
+
+    .sign{
+      margin-top:20px;
+      font-size:18px;
+      opacity:0.9;
+      font-weight:bold;
+      letter-spacing:1px;
+    }
+
+    #three-area{
+      position:absolute;
+      top:0;left:0;
+      width:100%;height:100%;
+      z-index:-1;
+    }
+  </style>
+</head>
+<body>
+
+  <div id="three-area"></div>
+
+  <div class="card">
+    <h1>Just spend time on that skill until you master it</h1>
+    <div class="sign">----- by Vamsi</div>
+  </div>
+
+  <script type="module">
+    import * as THREE from 'https://unpkg.com/three@0.158.0/build/three.module.js';
+
+    const area = document.getElementById('three-area');
+    const scene = new THREE.Scene();
+
+    const camera = new THREE.PerspectiveCamera(60, window.innerWidth/window.innerHeight, 0.1, 2000);
+    camera.position.set(0,0,55);
+
+    const renderer = new THREE.WebGLRenderer({alpha:true});
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio,2));
+    area.appendChild(renderer.domElement);
+
+    const light1 = new THREE.PointLight(0xff00aa, 1.2);
+    light1.position.set(40,30,50);
+    scene.add(light1);
+
+    const light2 = new THREE.PointLight(0x00aaff, 1.1);
+    light2.position.set(-50,-20,40);
+    scene.add(light2);
+
+    const torus = new THREE.Mesh(
+      new THREE.TorusKnotGeometry(10, 2.5, 150, 32),
+      new THREE.MeshStandardMaterial({metalness:0.7, roughness:0.2, color:0xffffff})
+    );
+    scene.add(torus);
+
+    function animate(){
+      requestAnimationFrame(animate);
+      torus.rotation.x += 0.01;
+      torus.rotation.y += 0.015;
+      renderer.render(scene,camera);
+    }
+    animate();
+
+    window.addEventListener('resize', ()=>{
+      camera.aspect = window.innerWidth/window.innerHeight;
+      camera.updateProjectionMatrix();
+      renderer.setSize(window.innerWidth, window.innerHeight);
+    });
+  </script>
+
+</body>
+</html>
